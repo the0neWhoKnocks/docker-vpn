@@ -1,0 +1,37 @@
+version: "3.4"
+
+services:
+  vpn:
+    cap_add:
+      - NET_ADMIN
+    container_name: vpn
+    devices:
+      - /dev/net/tun
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      # NOTE - The below are public DNS locations for TorGuard. Not sure if it
+      # was due to the locations I was using, but I was having to swap between
+      # Google's DNS and TorGuard's when making requests via the VPN.
+      # - 104.223.91.194
+      # - 104.223.91.210
+    environment:
+      TZ: America/Los_Angeles
+    image: dperson/openvpn-client
+    networks:
+      - default
+    ports:
+      - "3000:3000"
+    read_only: true
+    security_opt:
+      - label:disable
+    stdin_open: true
+    tmpfs:
+      - /run
+      - /tmp
+    tty: true
+    volumes:
+      - ./config:/vpn
+
+networks:
+  default:
